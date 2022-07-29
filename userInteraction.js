@@ -4,6 +4,9 @@ let rotationSensitivity = 0.2;      // How quickly the player's head rotates
 let rotationPrecision = 0.03;       // How small of an angle the rotation snaps to
 let translationSensitivity = 0.1    // How quickly the player moves around the scene
 
+let hasClicked = false;             // Prevents continuous clicking on the panel
+let pointerSize = 8;                // The size of the clicking area of the pointer
+
 function rotateHead() {
     rotateX(headOrientation.rotX);
     rotateY(headOrientation.rotY);
@@ -61,6 +64,17 @@ function interactWithPanel() {
         // Calculate the distance between the two wrists
         var distWrists = dist(wrists[0].x,wrists[0].y,wrists[1].x,wrists[1].y);
 
+        // If the player hasn't clicked on the panel yet
+        if(!hasClicked) {
+            // If the player clicks (by overlapping their wrists), click on the panel
+            if(distWrists < pointerSize*2) {
+                clickOnPanel();
+                hasClicked = true;
+            }
+        } 
+        // Once the player has clicked, wait till they move their wrists away before clicking again
+        else if(distWrists > pointerSize*2) hasClicked = false;
+
         // Loop through both wrists
         for(var i=0; i<2; i++) {
             // Calculated the mapped wrist position on the panel
@@ -75,11 +89,15 @@ function interactWithPanel() {
             push();
             translate(pointerX,pointerY,-99);
             // Choose the color of the pointer based on whether or not the player has selected something
-            if(distWrists < 10) fill(0,200,0);
+            if(hasClicked) fill(0,200,0);
             else fill(200,0,0);
             noStroke();
-            ellipse(0,0,5,5);
+            ellipse(0,0,pointerSize,pointerSize);
             pop();
         }
     }
+}
+
+function clickOnPanel() {
+    // Do something
 }
