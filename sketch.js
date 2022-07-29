@@ -1,5 +1,8 @@
-let cam;  // Represents the camera object that the p5 sketch uses to render the scene
+let cam;                   // Represents the camera object that the p5 sketch uses to render the scene
 let headOrientation = [];  // Stores the translation and rotation of the player's head in 3D space
+
+let rotationSensitivity = 0.2;  // How quickly the player's head rotates
+let rotationPrecision = 0.03;   // How small of an angle the rotation snaps to
 
 function setup() {
   // Create a canvas that fills the screen and is in 3D
@@ -21,12 +24,9 @@ function draw() {
 
   // Move the camera to the current position according to the player head's orientation
   cam.setPosition(0, 0, 0);
-  rotateX(headOrientation.rotX);
-  rotateZ(headOrientation.rotZ);
-  rotateY(headOrientation.rotY);
-  translate(headOrientation.posX, headOrientation.posY, headOrientation.posZ);
-  headOrientation.rotX = (mouseY - height / 2) / (height / 2) * -PI / 3;
-  headOrientation.rotY = (mouseX - width / 2) / (width / 2) * HALF_PI;
+  
+  rotateHead();
+  translateHead();
 
   // Draw the floor the blocks will be coming from
   noStroke();
@@ -67,28 +67,4 @@ function draw() {
   fill(200);
   plane(100,50);
   pop();
-}
-
-// Crude implementation of motion using key inputs. The keys control the player's orientation
-function keyPressed() {
-  switch (key) {
-    case 'd':
-      headOrientation.posX -= 2;
-      break;
-    case 'a':
-      headOrientation.posX += 2;
-      break;
-    case 's':
-      headOrientation.posZ -= 2;
-      break;
-    case 'w':
-      headOrientation.posZ += 2;
-      break;
-    case 'z':
-      headOrientation.posY -= 2;
-      break;
-    case 'x':
-      headOrientation.posY += 2;
-      break;
-  }
 }

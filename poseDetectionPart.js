@@ -1,6 +1,9 @@
 let video;          // The p5 video feed used to display what the camera sees
-let wrists = [];    // Stores the values of the left and right wrists of the player
-let prev = [];      // Stores the previous values of the wrists to calculate motion
+let nose;           // Stores the coordinates of the nose of the player
+let wrists = [];    // Stores the coordinates of the left and right wrists of the player
+let mouth = [];     // Stores the coordinates of the mouth's left and right position
+let ears = [];      // Stores the coordinates of the left and right ears of the player
+let prev = [];      // Stores the previous coordinates of the wrists to calculate motion
 
 function setupPoseDetectionPart() {
     // Initialize the video object
@@ -11,6 +14,8 @@ function setupPoseDetectionPart() {
     // Initialize the x and y points of the wrists
     for (var i = 0; i < 2; i++) {
         wrists[i] = { x: 0, y: 0 };
+        mouth[i] = { x: 0, y: 0 };
+        ears[i] = { x: 0, y: 0 };
         prev[i] = { x: 0, y: 0 };
     }
 
@@ -37,7 +42,7 @@ function setupPoseDetectionPart() {
         width: 640,
         height: 480
     });
-    //camera.start();
+    camera.start();
 
     // Don't display the HTML video element in the scene
     videoElement.style.display = "none";
@@ -57,12 +62,18 @@ function predict(results) {
     if (points == null) return;
 
     // Update the previous wrist values to be the current wrist values
-    prev[0] = { x: wrists[0].x, y: wrists[0].y };
-    prev[1] = { x: wrists[1].x, y: wrists[1].y };
+    prev[0] = createVector(wrists[0].x, wrists[0].y);
+    prev[1] = createVector(wrists[1].x, wrists[1].y);
 
-    // Initialize the x and y points of the wrists
-    for (var i = 0; i < 2; i++) wrists[i] = { x: 0, y: 0 };
+    for (var i = 0; i < 2; i++) {
+        wrists[i] = createVector(0,0);
 
+        mouth[i] = createVector(points[9+i].x, points[9+i].y);
+        ears[i] = createVector(points[7+i].x, points[7+i].y);
+    }
+
+    nose = createVector(points[0].x, points[0].y);
+    
     // wrists
     wrists[0].x += points[15].x;
     wrists[0].y += points[15].y;
@@ -89,8 +100,15 @@ function predict(results) {
 
     // The coordinates are represented as values from 0-1, 
     // so we need to scale them up and flip them horizontally to be in the correct position
-    for (let i = 0; i < wrists.length; i++) {
+    for (let i = 0; i < 2; i++) {
         wrists[i].x = (1 - wrists[i].x) * video.width;
         wrists[i].y *= video.height;
+        mouth[i].x = (1 - mouth[i].x) * video.width;
+        mouth[i].y *= video.height;
+        ears[i].x = (1 - ears[i].x) * video.width;
+        ears[i].y *= video.height;
     }
+
+    nose.x = (1 - nose.x) * video.width;
+    nose.y *= video.height;
 }
