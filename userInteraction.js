@@ -40,7 +40,7 @@ function rotateHead() {
 function translateHead() {
     translate(headOrientation.posX, headOrientation.posY, headOrientation.posZ);
 
-    if(mouth[0].x != 0) {
+    if(ears[0].x != 0) {
         // Moving left and right
         var target = (nose.x-video.width/2)/(video.width/2) * -150;
         headOrientation.posX = lerp(headOrientation.posX,target,translationSensitivity);
@@ -53,5 +53,33 @@ function translateHead() {
         // Moving back and forth
         var LtoR = p5.Vector.sub(ears[0],ears[1]);
         headOrientation.posZ = lerp(headOrientation.posZ,map(LtoR.mag(),5,200,-50,200),translationSensitivity);
+    }
+}
+
+function interactWithPanel() {
+    if(wrists[0].x != 0) {
+        // Calculate the distance between the two wrists
+        var distWrists = dist(wrists[0].x,wrists[0].y,wrists[1].x,wrists[1].y);
+
+        // Loop through both wrists
+        for(var i=0; i<2; i++) {
+            // Calculated the mapped wrist position on the panel
+            var pointerX = (wrists[i].x-nose.x)/(video.width/4) * 100;
+            var pointerY = (wrists[i].y-nose.y)/(video.height/4) * 50;
+
+            // If the pointer is out of bounds, don't display it
+            if(pointerX < -50 || pointerX > 50 || pointerY < -25 || pointerY > 25) 
+                continue;
+
+            // Translate to the pointer position and display
+            push();
+            translate(pointerX,pointerY,-99);
+            // Choose the color of the pointer based on whether or not the player has selected something
+            if(distWrists < 10) fill(0,200,0);
+            else fill(200,0,0);
+            noStroke();
+            ellipse(0,0,5,5);
+            pop();
+        }
     }
 }

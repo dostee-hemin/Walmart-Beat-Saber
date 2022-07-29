@@ -13,10 +13,10 @@ function setupPoseDetectionPart() {
 
     // Initialize the x and y points of the wrists
     for (var i = 0; i < 2; i++) {
-        wrists[i] = { x: 0, y: 0 };
-        mouth[i] = { x: 0, y: 0 };
-        ears[i] = { x: 0, y: 0 };
-        prev[i] = { x: 0, y: 0 };
+        wrists[i] = createVector();
+        mouth[i] = createVector();
+        ears[i] = createVector();
+        prev[i] = createVector();
     }
 
     // Create the pose detector with the given settings

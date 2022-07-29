@@ -62,8 +62,7 @@ function draw() {
   translate(0,0,-100);
   fill(200);
   plane(100,50);
-  translate(0,0,2);
-  imageMode(CENTER);
-  image(video,0,0,80,60);
   pop();
+
+  interactWithPanel();
 }
