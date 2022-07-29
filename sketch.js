@@ -1,8 +1,4 @@
 let cam;                   // Represents the camera object that the p5 sketch uses to render the scene
-let headOrientation = [];  // Stores the translation and rotation of the player's head in 3D space
-
-let rotationSensitivity = 0.2;  // How quickly the player's head rotates
-let rotationPrecision = 0.03;   // How small of an angle the rotation snaps to
 
 function setup() {
   // Create a canvas that fills the screen and is in 3D
@@ -66,5 +62,8 @@ function draw() {
   translate(0,0,-100);
   fill(200);
   plane(100,50);
+  translate(0,0,2);
+  imageMode(CENTER);
+  image(video,0,0,80,60);
   pop();
 }

@@ -1,3 +1,9 @@
+let headOrientation = [];  // Stores the translation and rotation of the player's head in 3D space
+
+let rotationSensitivity = 0.2;      // How quickly the player's head rotates
+let rotationPrecision = 0.03;       // How small of an angle the rotation snaps to
+let translationSensitivity = 0.1    // How quickly the player moves around the scene
+
 function rotateHead() {
     rotateX(headOrientation.rotX);
     rotateY(headOrientation.rotY);
@@ -33,4 +39,19 @@ function rotateHead() {
 
 function translateHead() {
     translate(headOrientation.posX, headOrientation.posY, headOrientation.posZ);
+
+    if(mouth[0].x != 0) {
+        // Moving left and right
+        var target = (nose.x-video.width/2)/(video.width/2) * -150;
+        headOrientation.posX = lerp(headOrientation.posX,target,translationSensitivity);
+        
+        // Moving up and down
+        target = (nose.y-video.height/2)/(video.height/2) * -70;
+        target -= headOrientation.posZ/200 * 70;
+        headOrientation.posY = lerp(headOrientation.posY,target,translationSensitivity);
+
+        // Moving back and forth
+        var LtoR = p5.Vector.sub(ears[0],ears[1]);
+        headOrientation.posZ = lerp(headOrientation.posZ,map(LtoR.mag(),5,200,-50,200),translationSensitivity);
+    }
 }
