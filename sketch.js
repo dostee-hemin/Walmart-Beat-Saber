@@ -1,5 +1,7 @@
 let cam;                   // Represents the camera object that the p5 sketch uses to render the scene
 
+let showMenu = false;      // Determines whether or not we can display and interct with the menu panel
+
 function setup() {
   // Create a canvas that fills the screen and is in 3D
   createCanvas(1260, 700, WEBGL);
@@ -11,12 +13,19 @@ function setup() {
   cam = createCamera();
   setCamera(cam);
 
+  setupBeatSaberPart();
+
   // Setup the part of the program that handles pose detection
   setupPoseDetectionPart();
 }
 
 function draw() {
   background(0);
+
+  // Every few frames, add another note block just for testing purposes
+  if(frameCount % 60 == 0) {
+    blocks.push(new Block(int(random(4)), int(random(3)), int(random(2)), int(random(9))));
+  }
 
   // Move the camera to the current position according to the player head's orientation
   cam.setPosition(0, 0, 0);
@@ -27,10 +36,10 @@ function draw() {
   // Draw the floor the blocks will be coming from
   noStroke();
   push();
-  translate(0, 100, -700);
+  translate(0, 200, -900);
   fill(100);
   rotateX(HALF_PI);
-  plane(300, 1000);
+  plane(400, 1500);
   pop();
   
   // Draw two walls of next to the floor
@@ -49,7 +58,7 @@ function draw() {
   
   // Draw the central platform the player stands on
   push();
-  translate(0, 100, 0);
+  translate(0, 200, 0);
   fill(255);
   rotateX(HALF_PI);
   plane(300, 300);
@@ -58,11 +67,13 @@ function draw() {
   pop();
   
   // Draw the menu panel
-  push();
-  translate(0,0,-100);
-  fill(200);
-  plane(100,50);
-  pop();
+  if(showMenu) {
+    push();
+    translate(0,0,-100);
+    fill(200);
+    plane(100,50);
+    pop();
 
-  interactWithPanel();
+    interactWithPanel();
+  }
 }
