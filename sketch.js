@@ -1,4 +1,4 @@
-let cam;                   // Represents the camera object that the p5 sketch uses to render the scene
+let virtualCamera;                   // Represents the camera object that the p5 sketch uses to render the scene
 
 let showMenu = false;      // Determines whether or not we can display and interct with the menu panel
 
@@ -10,8 +10,8 @@ function setup() {
   headOrientation = { posX: 0, posY: 0, posZ: 0, rotX: 0, rotY: 0, rotZ: 0 };
 
   // Create the camera object and assign it to our scene
-  cam = createCamera();
-  setCamera(cam);
+  virtualCamera = createCamera();
+  setCamera(virtualCamera);
 
   setupBeatSaberPart();
 
@@ -28,8 +28,7 @@ function draw() {
   }
 
   // Move the camera to the current position according to the player head's orientation
-  cam.setPosition(0, 0, 0);
-  
+  virtualCamera.setPosition(0, 0, 0);
   rotateHead();
   translateHead();
 
@@ -76,4 +75,6 @@ function draw() {
 
     interactWithPanel();
   }
+
+  updateGameElements();
 }

@@ -6,10 +6,58 @@ let ears = [];      // Stores the coordinates of the left and right ears of the 
 let prev = [];      // Stores the previous coordinates of the wrists to calculate motion
 
 function setupPoseDetectionPart() {
-    // Initialize the video object
-    video = createCapture(VIDEO);
-    video.size(640, 480);
-    video.hide();
+    // Create a new pose detector using the BlazePose model
+    let posePredictor = new Pose({locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+    }});
+    posePredictor.setOptions({
+        modelComplexity: 0,
+        smoothLandmarks: true,
+        enableSegmentation: true,
+        smoothSegmentation: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
+
+    // Set the function that will run when we get a pose
+    posePredictor.onResults(predict);
+
+    // Get the HTML video element that is our webcam
+    let videoElement = document.getElementsByClassName("input_video")[0];
+    // Provide the webcam feed to the pose detector
+    let camera = new Camera(videoElement, {
+        onFrame: async () => {
+        await posePredictor.send({image: videoElement});
+        },
+        width: 640,
+        height: 480
+    });
+    camera.start();
+
+    /*   This code is constructs a p5 Media Element using the existing video HTML tag   */
+    const node = this._userNode ? this._userNode : document.body;
+    node.appendChild(videoElement);
+    const mediaEl = new p5.MediaElement(videoElement, this)
+    this._elements.push(mediaEl);
+    mediaEl.loadedmetadata = false;
+
+    videoElement.addEventListener('loadedmetadata', () => {
+        mediaEl.width = videoElement.videoWidth;
+        mediaEl.height = videoElement.videoHeight;
+
+        if (mediaEl.elt.width === 0) mediaEl.elt.width = videoElement.videoWidth;
+        if (mediaEl.elt.height === 0) mediaEl.elt.height = videoElement.videoHeight;
+        if (mediaEl.presetPlaybackRate) {
+        mediaEl.elt.playbackRate = mediaEl.presetPlaybackRate;
+        delete mediaEl.presetPlaybackRate;
+        }
+        mediaEl.loadedmetadata = true;
+    });
+
+    video = mediaEl;
+
+    // Disable the HTML video element so that it doesn't interfere with our p5 sketch
+    videoElement.style.display = "none";
 
     // Initialize the x and y points of the wrists
     for (var i = 0; i < 2; i++) {
@@ -18,34 +66,6 @@ function setupPoseDetectionPart() {
         ears[i] = createVector();
         prev[i] = createVector();
     }
-
-    // Create the pose detector with the given settings
-    let pose = new Pose({
-        locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-        }
-    });
-    pose.setOptions({
-        modelComplexity: 0,
-        smoothLandmarks: true,
-        enableSegmentation: true,
-        smoothSegmentation: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
-    });
-    pose.onResults(predict);
-    let videoElement = document.getElementsByTagName("video")[0];
-    let camera = new Camera(videoElement, {
-        onFrame: async () => {
-            await pose.send({ image: videoElement });
-        },
-        width: 640,
-        height: 480
-    });
-    camera.start();
-
-    // Don't display the HTML video element in the scene
-    videoElement.style.display = "none";
 }
 
 
