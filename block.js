@@ -16,7 +16,7 @@ class Block {
 
         // Store the current and desired rotation of the note block
         this.angle = HALF_PI;
-        this.targetAngle = ((this.dir > 4) ? this.dir - 8 : this.dir) * PI / 4 + HALF_PI;
+        this.targetAngle = ((this.dir > 4) ? this.dir - 8 : this.dir) * QUARTER_PI + HALF_PI;
 
         // Initialize the block at the correct column, at the floor, far far away
         this.x = (this.column - 1.5) * blocksize * 1.6;
@@ -58,7 +58,7 @@ class Block {
         box(this.size, this.size, this.size);
 
         // Arrow
-        fill(255);
+        fill((this.z < slashAcceptancePoint) ? 150 : 255);
         noStroke();
         // Draw an arrow if the block is not a dot block
         if (this.dir < 8) {
@@ -99,12 +99,6 @@ class Block {
 
         // Move the block towards the player
         this.z += 10;
-
-        // Just for testing purposes, after the block has reached a point, slice it either correctly or incorrectly
-        if (this.z > -400 && this.canBeSliced) {
-            if(random(1) < 0.5) this.sliceCorrectly(this.angle);
-            else this.sliceIncorrectly();
-        }
     }
 
     // Return true if the block is either too far behind the player or it has been sliced
@@ -128,19 +122,20 @@ class Block {
 
 class SlicedBlock {
     constructor(x, y, z, angle, color, side, isDot) {
-        // Stores all x, y, and z rotations
-        this.angle = createVector(0,0,angle);
+        // Stores all x, y, and z rotations the block should be at
+        this.targetAngle = createVector(0,0,angle);
         // Stores how the x, y, and z angles should change over time
         this.angleVel = createVector(random(-0.02,0.02),random(0.06),0);
         // Determines how to draw the arrow
         this.isDot = isDot;
 
-        // If the block is a dot, we can only slice in horizontal and vertical directions, not diagonal
-        if(this.isDot) this.angle.z = round(this.angle.z/HALF_PI)*HALF_PI;
-
         // Assign the sliced block a location and a velocity in the direction of the slicing angle
         this.loc = createVector(x, y, z);
-        this.vel = p5.Vector.fromAngle(this.angle.z + random(PI / 4) * side).mult(random(1, 3));
+        this.vel = p5.Vector.fromAngle(this.targetAngle.z + random(PI / 4) * side).mult(random(1, 3));
+
+        // Stores all x, y, and z rotations the block is currently at
+        this.angle = this.targetAngle;
+        if(isDot) this.angle = createVector(0,0,0);
 
         // Set the color, side (left "-1" or right "+1"), and size
         this.color = color;
@@ -202,7 +197,8 @@ class SlicedBlock {
         this.loc.z += 5;
 
         // Update the rotation angles
-        this.angle.add(this.angleVel);
+        this.targetAngle.add(this.angleVel);
+        this.angle.lerp(this.targetAngle, 0.1);
 
         // Every frame, the block has less and less frames left to exist
         this.lifetime--;
