@@ -2,8 +2,6 @@ let virtualCamera;                   // Represents the camera object that the p5
 
 let showMenu = false;                // Determines whether or not we can display and interct with the menu panel
 
-let armReachX = 0, armReachY = 0;    // Represents the dimensions of the detection grid
-
 function setup() {
   // Create a canvas that fills the screen and is in 3D
   createCanvas(1260, 700, WEBGL);

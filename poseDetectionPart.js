@@ -34,7 +34,7 @@ function setupPoseDetectionPart() {
     });
     camera.start();
 
-    /*   This code is constructs a p5 Media Element using the existing video HTML tag   */
+    /*   This code constructs a p5 Media Element using the existing video HTML tag   */
     const node = this._userNode ? this._userNode : document.body;
     node.appendChild(videoElement);
     const mediaEl = new p5.MediaElement(videoElement, this)
