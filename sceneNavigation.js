@@ -3,7 +3,7 @@ let nextScene;
 
 // Variables for animating the transition
 let transitionFade = 400;
-let transitionFadeSpeed = 5;
+let transitionFadeSpeed = 8;
 
 function showTransition() {
     // Cover the screen in black when transitioning
@@ -25,7 +25,6 @@ function showTransition() {
 
 function transitionToNextScene() {
     currentScene.end();
-    nextScene.load();
 
     currentScene = nextScene;
     nextScene = null;

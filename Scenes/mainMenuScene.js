@@ -5,9 +5,6 @@ class MainMenuScene extends Scene {
 
     end() {}
 
-    load() {
-    }
-
     display() {
         // Draw the central platform the player stands on
         push();
@@ -23,6 +20,7 @@ class MainMenuScene extends Scene {
         push();
         translate(0,0,-100);
         fill(200);
+        noStroke(0);
         plane(100,50);
         pop();
     }

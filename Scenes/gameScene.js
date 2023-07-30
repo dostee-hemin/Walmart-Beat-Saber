@@ -6,16 +6,14 @@ let showMenu;                            // Determines whether or not we can dis
 class GameScene extends Scene {
     constructor() {
         super();
+
+        showMenu = false;
+        gravity = createVector(0, 0.2, 0);
     }
 
     end() {
         blocks = []
         slicedBlocks = [];
-    }
-
-    load() {
-        showMenu = false;
-        gravity = createVector(0, 0.2, 0);
     }
 
     display() {
@@ -96,5 +94,7 @@ class GameScene extends Scene {
 
         // Interact with the panel if it is visible
         if(showMenu) interactWithPanel();
+
+        detectSlashMovement();
     }
 }
