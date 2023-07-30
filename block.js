@@ -1,5 +1,4 @@
 let blocksize = 50;     // The size of the note block (in pixels)
-let gravity;            // A vector that points downards to add a falling motion to the sliced blocks
 
 // Class for the note blocks
 class Block {
@@ -21,7 +20,7 @@ class Block {
         // Initialize the block at the correct column, at the floor, far far away
         this.x = (this.column - 1.5) * blocksize * 1.6;
         this.y = blocksize * 2.4;
-        this.startingZ = -900;          // Determines when the block will adjust to the correct position and orientation
+        this.startingZ = -1200;          // Determines when the block will adjust to the correct position and orientation
         this.z = this.startingZ * 2;
 
         // Figure out where the coordinates of the block should be based on the row and column

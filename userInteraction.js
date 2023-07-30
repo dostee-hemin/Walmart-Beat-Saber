@@ -101,3 +101,8 @@ function interactWithPanel() {
 function clickOnPanel() {
     // Do something
 }
+
+function keyPressed() {
+    // Quick scene navigation for testing purposes
+    nextScene = new GameScene();
+}

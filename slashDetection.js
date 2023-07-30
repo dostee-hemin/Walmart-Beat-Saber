@@ -1,6 +1,5 @@
-let armReachX = 0, armReachY = 0;    // Represents the dimensions of the detection grid
-let offAngleThreshold;               // Represents how far off from the block angle a slash can be for it to still be considered correct 
-let slashAcceptancePoint;            // Represents the point the blocks have to pass for them to accept slashes
+let offAngleThreshold = 0.5;                // Represents how far off (in radians) from the block angle a slash can be for it to still be considered correct 
+let slashAcceptancePoint = -300;            // Represents the point the blocks have to pass for them to accept slashes
 
 function checkBlockSlash(saberColor, slashColumn, slashRow, slashAngle) {
     for(let i=0; i<blocks.length; i++) {
