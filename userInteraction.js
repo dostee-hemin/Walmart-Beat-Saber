@@ -6,6 +6,8 @@ let translationSensitivity = 0.1    // How quickly the player moves around the s
 
 let hasClicked = false;             // Prevents continuous clicking on the panel
 let pointerSize = 8;                // The size of the clicking area of the pointer
+let pointer = [{x: 0, y: 0}, {x: 0, y: 0}];     // The two wrist positions mapped onto the UI panel
+let cursorZone = {width: 500, height: 400};     // The dimensions of the UI panel where the cursor can exist
 
 function rotateHead() {
     rotateX(headOrientation.rotX);
@@ -78,16 +80,16 @@ function interactWithPanel() {
         // Loop through both wrists
         for(var i=0; i<2; i++) {
             // Calculated the mapped wrist position on the panel
-            var pointerX = (wrists[i].x-nose.x)/(video.width/4) * 100;
-            var pointerY = (wrists[i].y-nose.y)/(video.height/4) * 50;
+            pointer[i].x = (wrists[i].x-(video.width/2))/(video.width/4) * cursorZone.width/2;
+            pointer[i].y = (wrists[i].y-(video.height/2))/(video.height/4) * cursorZone.height/2;
 
             // If the pointer is out of bounds, don't display it
-            if(pointerX < -50 || pointerX > 50 || pointerY < -25 || pointerY > 25) 
+            if(pointer[i].x < -cursorZone.width/2 || pointer[i].x > cursorZone.width/2 || pointer[i].y < -cursorZone.height/2 || pointer[i].y > cursorZone.height/2) 
                 continue;
 
             // Translate to the pointer position and display
             push();
-            translate(pointerX,pointerY,-99);
+            translate(pointer[i].x,pointer[i].y,-299);
             // Choose the color of the pointer based on whether or not the player has selected something
             if(hasClicked) fill(0,200,0);
             else fill(200,0,0);

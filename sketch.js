@@ -17,7 +17,7 @@ function setup() {
   // Set the font of text we'll be using
   textFont(loadFont('Assets/coolvetica rg.otf'));
 
-  currentScene = new CalibrationScene();
+  currentScene = new MainMenuScene();
 }
 
 function draw() {

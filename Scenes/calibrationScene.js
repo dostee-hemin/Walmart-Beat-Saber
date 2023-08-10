@@ -1,4 +1,4 @@
-let armReachX, armReachY;    // Represents the dimensions of the detection grid
+let armReachX = 460, armReachY = 305;    // Represents the dimensions of the detection grid
 
 class CalibrationScene extends Scene {
     constructor() {

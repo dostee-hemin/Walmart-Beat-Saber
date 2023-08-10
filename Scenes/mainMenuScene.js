@@ -1,6 +1,30 @@
 class MainMenuScene extends Scene {
     constructor() {
         super();
+
+        // Temporary code for testing out the button
+        this.button = new Button();
+        this.button.locate(0,0);
+        this.button.onHover = function () {
+            this.color = "#AAAAFF";
+            this.textColor = "#FFFFFF";
+            this.text = "Almost there!";
+        }
+        this.button.onOutside = function () {
+            this.color = "#FFFFFF";
+            this.textColor = "#000000";
+            this.text = "Press me!";
+        }
+        this.button.onPress = function() {
+            this.color = "#FFAAAA";
+            this.textColor = "#FFFFFF";
+            this.text = "YAY!";
+        }
+        this.button.onRelease = function() {
+            this.color = "#AAFFAA";
+            this.textColor = "#FFFFFF";
+            this.text = "Goodbye :')";
+        }
     }
 
     end() {}
@@ -18,11 +42,15 @@ class MainMenuScene extends Scene {
 
         // Draw the menu panel
         push();
-        translate(0,0,-100);
+        translate(0,0,-300);
         fill(200);
         noStroke(0);
-        plane(100,50);
+        plane(cursorZone.width,cursorZone.height);
+
+        this.button.display();
+        
         pop();
+
     }
 
     update() {
