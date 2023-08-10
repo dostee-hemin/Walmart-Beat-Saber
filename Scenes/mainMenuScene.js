@@ -40,12 +40,20 @@ class MainMenuScene extends Scene {
         sphere(20);
         pop();
 
+        // Draw the webcam feed
+        push();
+        translate(0,0,-300);
+        scale(-1, 1);
+        imageMode(CENTER);
+        image(video,0,0, cursorZone.width,cursorZone.height);
+        pop();
+
         // Draw the menu panel
         push();
         translate(0,0,-300);
-        fill(200);
-        noStroke(0);
-        plane(cursorZone.width,cursorZone.height);
+        // fill(200);
+        // noStroke(0);
+        //plane(cursorZone.width,cursorZone.height);
 
         this.button.display();
         

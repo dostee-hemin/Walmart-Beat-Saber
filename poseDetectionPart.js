@@ -4,6 +4,7 @@ let wrists = [];    // Stores the coordinates of the left and right wrists of th
 let mouth = [];     // Stores the coordinates of the mouth's left and right position
 let ears = [];      // Stores the coordinates of the left and right ears of the player
 let prev = [];      // Stores the previous coordinates of the wrists to calculate motion
+let thumbs = [];    // Stores the coordinates of the left and right thumbs of the player
 
 function setupPoseDetectionPart() {
     // Create a new pose detector using the BlazePose model
@@ -65,6 +66,7 @@ function setupPoseDetectionPart() {
         mouth[i] = createVector();
         ears[i] = createVector();
         prev[i] = createVector();
+        thumbs[i] = createVector();
     }
 }
 
@@ -95,40 +97,29 @@ function predict(results) {
     nose = createVector(points[0].x, points[0].y);
     
     // wrists
-    wrists[0].x += points[15].x;
-    wrists[0].y += points[15].y;
-    wrists[1].x += points[16].x;
-    wrists[1].y += points[16].y;
+    wrists[0].x = points[15].x;
+    wrists[0].y = points[15].y;
+    wrists[1].x = points[16].x;
+    wrists[1].y = points[16].y;
 
     // thumbs
-    wrists[0].x += points[21].x;
-    wrists[0].y += points[21].y;
-    wrists[1].x += points[22].x;
-    wrists[1].y += points[22].y;
-
-    // pinkies
-    wrists[0].x += points[17].x;
-    wrists[0].y += points[17].y;
-    wrists[1].x += points[18].x;
-    wrists[1].y += points[18].y;
-
-    // average
-    wrists[0].x /= 3;
-    wrists[0].y /= 3;
-    wrists[1].x /= 3;
-    wrists[1].y /= 3;
+    thumbs[0].x = points[21].x;
+    thumbs[0].y = points[21].y;
+    thumbs[1].x = points[22].x;
+    thumbs[1].y = points[22].y;
 
     // The coordinates are represented as values from 0-1, 
     // so we need to scale them up and flip them horizontally to be in the correct position
     for (let i = 0; i < 2; i++) {
-        wrists[i].x = (1 - wrists[i].x) * video.width;
-        wrists[i].y *= video.height;
-        mouth[i].x = (1 - mouth[i].x) * video.width;
-        mouth[i].y *= video.height;
-        ears[i].x = (1 - ears[i].x) * video.width;
-        ears[i].y *= video.height;
+        mapToVideo(wrists[i]);
+        mapToVideo(mouth[i]);
+        mapToVideo(ears[i]);
+        mapToVideo(thumbs[i]);
     }
+    mapToVideo(nose);
+}
 
-    nose.x = (1 - nose.x) * video.width;
-    nose.y *= video.height;
+function mapToVideo(vector) {
+    vector.x = (1 - vector.x) * video.width;
+    vector.y *= video.height;
 }

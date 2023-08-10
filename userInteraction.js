@@ -5,8 +5,9 @@ let rotationPrecision = 0.03;       // How small of an angle the rotation snaps 
 let translationSensitivity = 0.1    // How quickly the player moves around the scene
 
 let hasClicked = false;             // Prevents continuous clicking on the panel
-let pointerSize = 8;                // The size of the clicking area of the pointer
-let pointer = [{x: 0, y: 0}, {x: 0, y: 0}];     // The two wrist positions mapped onto the UI panel
+let cursorSize = 8;                 // The size of the clicking area of the cursor
+let cursor = [{x: 0, y: 0}, {x: 0, y: 0}];      // The two wrist positions mapped onto the UI panel
+let rightCursorClicked = false;                 // Represents which cursor clicked (left = false, right = true)
 let cursorZone = {width: 500, height: 400};     // The dimensions of the UI panel where the cursor can exist
 
 function rotateHead() {
@@ -63,38 +64,51 @@ function translateHead() {
 
 function interactWithPanel() {
     if(wrists[0].x != 0) {
-        // Calculate the distance between the two wrists
-        var distWrists = dist(wrists[0].x,wrists[0].y,wrists[1].x,wrists[1].y);
+        // Calculate the distance between the thumbs and the wrists
+        var distHands = [abs(thumbs[0].y-wrists[0].y), abs(thumbs[1].y-wrists[1].y)];
 
         // If the player hasn't clicked on the panel yet
         if(!hasClicked) {
-            // If the player clicks (by overlapping their wrists), click on the panel
-            if(distWrists < pointerSize*2) {
+            // If the player clicks (by rotating their hands), click on the panel
+            if(distHands[0] < cursorSize || distHands[1] < cursorSize) {
                 clickOnPanel();
                 hasClicked = true;
+                rightCursorClicked = distHands[1] < cursorSize;
             }
         } 
-        // Once the player has clicked, wait till they move their wrists away before clicking again
-        else if(distWrists > pointerSize*2) hasClicked = false;
+        // Once the player has clicked, wait till they rotate their hands away before clicking again
+        else if(distHands[0] > cursorSize && !rightCursorClicked) hasClicked = false;
+        else if(distHands[1] > cursorSize && rightCursorClicked) hasClicked = false;
 
         // Loop through both wrists
         for(var i=0; i<2; i++) {
             // Calculated the mapped wrist position on the panel
-            pointer[i].x = (wrists[i].x-(video.width/2))/(video.width/4) * cursorZone.width/2;
-            pointer[i].y = (wrists[i].y-(video.height/2))/(video.height/4) * cursorZone.height/2;
+            cursor[i].x = (wrists[i].x-(video.width/2))/(video.width/2) * cursorZone.width/2;
+            cursor[i].y = (wrists[i].y-(video.height/2))/(video.height/2) * cursorZone.height/2;
 
-            // If the pointer is out of bounds, don't display it
-            if(pointer[i].x < -cursorZone.width/2 || pointer[i].x > cursorZone.width/2 || pointer[i].y < -cursorZone.height/2 || pointer[i].y > cursorZone.height/2) 
+            // Thumb position mapped to the position of the panel (just for visualization purposes)
+            var pointerT = {x: (thumbs[i].x-(video.width/2))/(video.width/2) * cursorZone.width/2, y: (thumbs[i].y-(video.height/2))/(video.height/2) * cursorZone.height/2};
+
+            // If the cursor is out of bounds, don't display it
+            if(cursor[i].x < -cursorZone.width/2 || cursor[i].x > cursorZone.width/2 || cursor[i].y < -cursorZone.height/2 || cursor[i].y > cursorZone.height/2) 
                 continue;
 
-            // Translate to the pointer position and display
+            // Translate to the cursor position and display
             push();
-            translate(pointer[i].x,pointer[i].y,-299);
-            // Choose the color of the pointer based on whether or not the player has selected something
+            translate(cursor[i].x,cursor[i].y,-299);
+            // Choose the color of the cursor based on whether or not the player has selected something
             if(hasClicked) fill(0,200,0);
             else fill(200,0,0);
             noStroke();
-            ellipse(0,0,pointerSize,pointerSize);
+            ellipse(0,0,cursorSize,cursorSize);
+            pop();
+
+            // Translate to the thumb position and display
+            push();
+            translate(pointerT.x,pointerT.y,-299);
+            fill(0,200,0);
+            noStroke();
+            ellipse(0,0,cursorSize*0.5,cursorSize*0.5);
             pop();
         }
     }

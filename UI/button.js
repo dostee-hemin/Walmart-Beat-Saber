@@ -1,3 +1,5 @@
+/* This code is based off of the p5.clickable library, but I've copied it here so that I can add custom functionality */
+
 //Determines if the mouse was pressed on the previous frame
 var cursorWasPressed = false;
 //Last hovered button
@@ -175,10 +177,10 @@ class Button {
 		if(this.textFont != null) textFont(this.textFont);
 		text(this.text, 0, 0);
 		if(wrists[0].x != 0) {
-			if ((pointer[0].x >= this.x - this.width/2 && pointer[0].y >= this.y - this.height/2 &&
-				pointer[0].x < this.x + this.width/1 && pointer[0].y < this.y + this.height/2) ||
-				(pointer[1].x >= this.x - this.width/2 && pointer[1].y >= this.y - this.height/2
-				&& pointer[1].x < this.x + this.width/1 && pointer[1].y < this.y + this.height/2)) {
+			if ((cursor[0].x >= this.x - this.width/2 && cursor[0].y >= this.y - this.height/2 &&
+				cursor[0].x < this.x + this.width/1 && cursor[0].y < this.y + this.height/2) ||
+				(cursor[1].x >= this.x - this.width/2 && cursor[1].y >= this.y - this.height/2
+				&& cursor[1].x < this.x + this.width/1 && cursor[1].y < this.y + this.height/2)) {
 				lastHoveredButton = this;
 				if (hasClicked && !cursorWasPressed)
 					lastClickedButton = this;
