@@ -65,29 +65,27 @@ function translateHead() {
 function interactWithPanel() {
     if(wrists[0].x != 0) {
         // Calculate the distance between the thumbs and the wrists
-        var distHands = [abs(thumbs[0].y-wrists[0].y), abs(thumbs[1].y-wrists[1].y)];
+        var distHands = [thumbs[0].y-wrists[0].y, thumbs[1].y-wrists[1].y];
+        let threshold = armReachX/50;
 
         // If the player hasn't clicked on the panel yet
         if(!hasClicked) {
             // If the player clicks (by rotating their hands), click on the panel
-            if(distHands[0] < cursorSize || distHands[1] < cursorSize) {
+            if((distHands[0] > -threshold && distHands[0] < 0) || (distHands[1] > -threshold && distHands[1] < 0)) {
                 clickOnPanel();
                 hasClicked = true;
-                rightCursorClicked = distHands[1] < cursorSize;
+                rightCursorClicked = distHands[1] > -threshold;
             }
         } 
         // Once the player has clicked, wait till they rotate their hands away before clicking again
-        else if(distHands[0] > cursorSize && !rightCursorClicked) hasClicked = false;
-        else if(distHands[1] > cursorSize && rightCursorClicked) hasClicked = false;
+        else if((distHands[0] < -threshold || distHands[0] > 0) && !rightCursorClicked) hasClicked = false;
+        else if((distHands[1] < -threshold || distHands[1] > 0) && rightCursorClicked) hasClicked = false;
 
         // Loop through both wrists
         for(var i=0; i<2; i++) {
             // Calculated the mapped wrist position on the panel
-            cursor[i].x = (wrists[i].x-(video.width/2))/(video.width/2) * cursorZone.width/2;
-            cursor[i].y = (wrists[i].y-(video.height/2))/(video.height/2) * cursorZone.height/2;
-
-            // Thumb position mapped to the position of the panel (just for visualization purposes)
-            var pointerT = {x: (thumbs[i].x-(video.width/2))/(video.width/2) * cursorZone.width/2, y: (thumbs[i].y-(video.height/2))/(video.height/2) * cursorZone.height/2};
+            cursor[i].x = (wrists[i].x-(video.width/2))/(video.width/4) * cursorZone.width/2;
+            cursor[i].y = (wrists[i].y-(video.height/2))/(video.height/4) * cursorZone.height/2;
 
             // If the cursor is out of bounds, don't display it
             if(cursor[i].x < -cursorZone.width/2 || cursor[i].x > cursorZone.width/2 || cursor[i].y < -cursorZone.height/2 || cursor[i].y > cursorZone.height/2) 
@@ -97,18 +95,10 @@ function interactWithPanel() {
             push();
             translate(cursor[i].x,cursor[i].y,-299);
             // Choose the color of the cursor based on whether or not the player has selected something
-            if(hasClicked) fill(0,200,0);
+            if(hasClicked && ((i==0 && !rightCursorClicked) || (i==1 && rightCursorClicked))) fill(0,200,0);
             else fill(200,0,0);
             noStroke();
             ellipse(0,0,cursorSize,cursorSize);
-            pop();
-
-            // Translate to the thumb position and display
-            push();
-            translate(pointerT.x,pointerT.y,-299);
-            fill(0,200,0);
-            noStroke();
-            ellipse(0,0,cursorSize*0.5,cursorSize*0.5);
             pop();
         }
     }
@@ -116,9 +106,4 @@ function interactWithPanel() {
 
 function clickOnPanel() {
     // Do something
-}
-
-function keyPressed() {
-    // Quick scene navigation for testing purposes
-    nextScene = new GameScene();
 }

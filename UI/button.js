@@ -162,11 +162,12 @@ class Button {
 
 	display(){
 		push();
+		translate(this.x,this.y);
 		fill(this.color);
 		stroke(this.stroke);
 		strokeWeight(this.strokeWeight);
 		rectMode(CENTER);
-		rect(this.x, this.y, this.width, this.height, this.cornerRadius);
+		rect(0, 0, this.width, this.height, this.cornerRadius);
 		fill(this.textColor);
 		noStroke();
 		if(this.image){
@@ -177,11 +178,12 @@ class Button {
 		if(this.textFont != null) textFont(this.textFont);
 		text(this.text, 0, 0);
 		if(wrists[0].x != 0) {
-			if ((cursor[0].x >= this.x - this.width/2 && cursor[0].y >= this.y - this.height/2 &&
-				cursor[0].x < this.x + this.width/1 && cursor[0].y < this.y + this.height/2) ||
-				(cursor[1].x >= this.x - this.width/2 && cursor[1].y >= this.y - this.height/2
-				&& cursor[1].x < this.x + this.width/1 && cursor[1].y < this.y + this.height/2)) {
-				lastHoveredButton = this;
+			var leftOnButton = cursor[0].x >= this.x - this.width/2 && cursor[0].y >= this.y - this.height/2 && cursor[0].x < this.x + this.width/2 && cursor[0].y < this.y + this.height/2;
+			var rightOnButton = cursor[1].x >= this.x - this.width/2 && cursor[1].y >= this.y - this.height/2 && cursor[1].x < this.x + this.width/2 && cursor[1].y < this.y + this.height/2;
+			
+			if(leftOnButton || rightOnButton) lastHoveredButton = this;
+
+			if((rightOnButton && rightCursorClicked) || (leftOnButton && !rightCursorClicked)) {
 				if (hasClicked && !cursorWasPressed)
 					lastClickedButton = this;
 			}

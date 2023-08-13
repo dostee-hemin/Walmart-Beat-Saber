@@ -4,8 +4,8 @@ class CalibrationScene extends Scene {
     constructor() {
         super();
 
-        this.calibrationStartFrame = 0; // The starting frame from which the user has held the correct calibration position
-        this.timeUntilCalibtation = 60; // The amount of frames required for the user to hold the calibration position until it is accepted
+        this.calibrationStartFrame = frameCount; // The starting frame from which the user has held the correct calibration position
+        this.timeUntilCalibtation = 60;          // The amount of frames required for the user to hold the calibration position until it is accepted
 
         armReachX = 0;
         armReachY = 0;
@@ -66,6 +66,12 @@ class CalibrationScene extends Scene {
     }
 
     update() {
+        // Only start calibrating once we have properly entered the scene
+        if(transitionFade != 0) {
+            this.calibrationStartFrame = frameCount;
+            return;
+        }
+
         // If we have not detected poses, leave the function
         if(wrists[0].x == 0) return;
 

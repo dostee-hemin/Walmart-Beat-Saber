@@ -2,28 +2,36 @@ class MainMenuScene extends Scene {
     constructor() {
         super();
 
-        // Temporary code for testing out the button
-        this.button = new Button();
-        this.button.locate(0,0);
-        this.button.onHover = function () {
-            this.color = "#AAAAFF";
-            this.textColor = "#FFFFFF";
-            this.text = "Almost there!";
+        // Button to enter the calibration scene
+        this.calibrateButton = new Button();
+        this.calibrateButton.locate(-100,0);
+        this.calibrateButton.text = "Calibrate Camera";
+        this.calibrateButton.textColor = "#000000";
+        this.calibrateButton.onHover = function () {
+            this.color = "#AAAAAA";
         }
-        this.button.onOutside = function () {
+        this.calibrateButton.onOutside = function () {
+            this.color = "#888888";
+        }
+        this.calibrateButton.onPress = function() {
             this.color = "#FFFFFF";
-            this.textColor = "#000000";
-            this.text = "Press me!";
+            nextScene = new CalibrationScene();
         }
-        this.button.onPress = function() {
-            this.color = "#FFAAAA";
-            this.textColor = "#FFFFFF";
-            this.text = "YAY!";
+
+        // Button to enter the game scene
+        this.enterGameButton = new Button();
+        this.enterGameButton.locate(100,0);
+        this.enterGameButton.text = "Enter Level";
+        this.enterGameButton.textColor = "#000000";
+        this.enterGameButton.onHover = function () {
+            this.color = "#AAAAAA";
         }
-        this.button.onRelease = function() {
-            this.color = "#AAFFAA";
-            this.textColor = "#FFFFFF";
-            this.text = "Goodbye :')";
+        this.enterGameButton.onOutside = function () {
+            this.color = "#888888";
+        }
+        this.enterGameButton.onPress = function() {
+            this.color = "#FFFFFF";
+            nextScene = new GameScene();
         }
     }
 
@@ -40,22 +48,15 @@ class MainMenuScene extends Scene {
         sphere(20);
         pop();
 
-        // Draw the webcam feed
-        push();
-        translate(0,0,-300);
-        scale(-1, 1);
-        imageMode(CENTER);
-        image(video,0,0, cursorZone.width,cursorZone.height);
-        pop();
-
         // Draw the menu panel
         push();
         translate(0,0,-300);
-        // fill(200);
-        // noStroke(0);
-        //plane(cursorZone.width,cursorZone.height);
+        fill(200);
+        noStroke(0);
+        plane(cursorZone.width,cursorZone.height);
 
-        this.button.display();
+        this.calibrateButton.display();
+        this.enterGameButton.display();
         
         pop();
 
