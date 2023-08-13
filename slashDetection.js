@@ -38,6 +38,7 @@ function checkBlockSlash(saberColor, slashColumn, slashRow, slashAngle) {
         }
 
         // At this point, we have passed all the checks so it must be a correct slash
+        healthRemaining = constrain(healthRemaining+10, 0, 100);
         b.sliceCorrectly(b.targetAngle);
     }
 }

@@ -1,4 +1,4 @@
-class LevelCompletedScene extends Scene {
+class LevelFailedScene extends Scene {
     constructor() {
         super();
 
@@ -58,7 +58,7 @@ class LevelCompletedScene extends Scene {
         fill(0);
         textSize(40);
         textAlign(CENTER,CENTER);
-        text("Level Completed!", 0, -100);
+        text("Level Failed", 0, -100);
 
         this.restartButton.display();
         this.enterMainMenuButton.display();

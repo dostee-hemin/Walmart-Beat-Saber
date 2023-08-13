@@ -95,20 +95,32 @@ class Block {
         // Move the block towards the player
         this.z = -(this.time + levelStartSecond + startDelaySecond - millis()/1000) * scalingFactor;
 
+        // If the player has failed, shrink the blocks
+        if(healthRemaining == 0) {
+            this.size--;
+            if(this.size < 0) this.size = 0;
+        } 
+        // If the block has just started entering the scene, grow the blocks
+        else if(this.z < this.startingZ) {
+            this.size = map(abs(this.z - this.startingZ), abs(this.startingZ), 0, 0, blocksize);
+        }
+        
         // If the block should start adjusting its orientation, move it to the correct height and rotation
         if (this.z > this.startingZ) {
             this.y = lerp(this.y, this.targetY, 0.1);
             this.angle = lerp(this.angle, this.targetAngle, 0.1);
         } 
-        // If the block is still entering the scene, make it grow slowly
-        else {
-            this.size = map(abs(this.z - this.startingZ), abs(this.startingZ), 0, 0, blocksize);
-        }
+        
     }
 
-    // Return true if the block is either too far behind the player or it has been sliced
+    // Return true if the block is too far behind the player
     isFinished() {
-        return this.z > 300 || this.isSliced;
+        return this.z > 300;
+    }
+
+    // Return whether or not the block has been sliced
+    hasBeenSliced() {
+        return this.isSliced;
     }
 
     // Create two new sliced blocks at the current block's location with the given angle

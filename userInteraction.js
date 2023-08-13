@@ -74,7 +74,7 @@ function interactWithPanel() {
             if((distHands[0] > -threshold && distHands[0] < 0) || (distHands[1] > -threshold && distHands[1] < 0)) {
                 clickOnPanel();
                 hasClicked = true;
-                rightCursorClicked = distHands[1] > -threshold;
+                rightCursorClicked = distHands[1] > -threshold && distHands[1] < 0;
             }
         } 
         // Once the player has clicked, wait till they rotate their hands away before clicking again

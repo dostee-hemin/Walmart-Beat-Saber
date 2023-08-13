@@ -9,15 +9,20 @@ let songDuration = 10;                           // The time in seconds of the c
 let visibleTimeSecond = 3;                       // The amount of time in seconds you have to see the blocks                    
 let scalingFactor = (2*1200)/visibleTimeSecond;  // Converts seconds of the song to pixels in the screen 
 
+let healthRemaining;
+
 class GameScene extends Scene {
     constructor() {
         super();
+
+        this.levelFailedCountdown = 0;
     }
 
     load() {
         gravity = createVector(0, 0.2, 0);
 
         levelStartSecond = millis() / 1000;
+        healthRemaining = 100;
 
         this.loadBlocks();
     }
@@ -31,11 +36,24 @@ class GameScene extends Scene {
         // Draw the floor the blocks will be coming from
         noStroke();
         push();
-        translate(0, 200, -900);
+        // Health bar
+        translate(0,200,-400);
+        fill(0,200,0);
+        noStroke();
+        rectMode(CORNER);
+        rect(-150,10, healthRemaining/100 * 300, 30);
+        stroke(255);
+        noFill();
+        strokeWeight(2);
+        rect(-150,10, 300, 30);
+        // Floor
+        translate(0, 0, -800);
         fill(100);
+        noStroke();
         rotateX(HALF_PI);
         plane(400, 1500);
         pop();
+
 
         // Draw two walls of next to the floor
         push();
@@ -81,12 +99,26 @@ class GameScene extends Scene {
     }
 
     update() {
+        if(this.levelFailedCountdown > 0) {
+            this.levelFailedCountdown--;
+            if(this.levelFailedCountdown == 0) nextScene = new LevelFailedScene();
+        }
+
         // Update and remove note blocks
         for (var i = blocks.length - 1; i >= 0; i--) {
             let b = blocks[i];
 
             b.update();
-            if (b.isFinished()) blocks.splice(i, 1);
+
+            if (b.hasBeenSliced()) blocks.splice(i, 1);
+
+            else if (b.isFinished()) {
+                healthRemaining = constrain(healthRemaining-25, 0, 100);
+                if(healthRemaining == 0 && this.levelFailedCountdown == 0) {
+                    this.levelFailedCountdown = 60;
+                }
+                blocks.splice(i, 1);
+            }
         }
 
 
@@ -101,7 +133,7 @@ class GameScene extends Scene {
         // Interact with the panel if it is visible
         if(showMenu) interactWithPanel();
 
-        detectSlashMovement();
+        if(healthRemaining != 0) detectSlashMovement();
 
         // If we have reached the end of the song, the level has been completed so move on to the level completion scene
         if (millis() / 1000 > levelStartSecond + startDelaySecond + songDuration) {

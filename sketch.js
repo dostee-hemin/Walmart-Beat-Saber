@@ -18,6 +18,7 @@ function setup() {
   textFont(loadFont('Assets/coolvetica rg.otf'));
 
   currentScene = new MainMenuScene();
+  currentScene.load();
 }
 
 function draw() {
