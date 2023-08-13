@@ -2,7 +2,7 @@ let blocksize = 50;     // The size of the note block (in pixels)
 
 // Class for the note blocks
 class Block {
-    constructor(column, row, color, dir) {
+    constructor(column, row, color, dir, time) {
         // Rows start from 0 at the bottom, columns start from 0 at the left
         this.row = row;
         this.column = column;
@@ -13,6 +13,9 @@ class Block {
         // Stores an integer representing the orientation (0=down, 1=down_left, ..., 7=down_right, 8=dot)
         this.dir = dir;
 
+        // Stores the time in seconds the block should be slashed once the music starts
+        this.time = time;
+
         // Store the current and desired rotation of the note block
         this.angle = HALF_PI;
         this.targetAngle = ((this.dir > 4) ? this.dir - 8 : this.dir) * QUARTER_PI + HALF_PI;
@@ -21,7 +24,7 @@ class Block {
         this.x = (this.column - 1.5) * blocksize * 1.6;
         this.y = blocksize * 2.4;
         this.startingZ = -1200;          // Determines when the block will adjust to the correct position and orientation
-        this.z = this.startingZ * 2;
+        this.z = 0;
 
         // Figure out where the coordinates of the block should be based on the row and column
         this.targetX = this.x;
@@ -39,6 +42,9 @@ class Block {
     }
 
     display() {
+        // If the block is too far away, leave don't draw it
+        if(this.z < -visibleTimeSecond*scalingFactor) return;
+
         stroke(0);
 
         // Assign the correct color
@@ -86,6 +92,9 @@ class Block {
     }
 
     update() {
+        // Move the block towards the player
+        this.z = -(this.time + levelStartSecond + startDelaySecond - millis()/1000) * scalingFactor;
+
         // If the block should start adjusting its orientation, move it to the correct height and rotation
         if (this.z > this.startingZ) {
             this.y = lerp(this.y, this.targetY, 0.1);
@@ -95,9 +104,6 @@ class Block {
         else {
             this.size = map(abs(this.z - this.startingZ), abs(this.startingZ), 0, 0, blocksize);
         }
-
-        // Move the block towards the player
-        this.z += 10;
     }
 
     // Return true if the block is either too far behind the player or it has been sliced

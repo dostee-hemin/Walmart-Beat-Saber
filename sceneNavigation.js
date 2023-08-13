@@ -25,6 +25,7 @@ function showTransition() {
 
 function transitionToNextScene() {
     currentScene.end();
+    nextScene.load();
 
     currentScene = nextScene;
     nextScene = null;
